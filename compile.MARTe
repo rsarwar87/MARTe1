@@ -157,18 +157,29 @@ function compileModules(){
 	    cd $workdir
 	done
 }
-	
-function extractFiles(){	
 
+function extractFiles(){	
+    
+    if [ "$makeMode" = "all" ]
+    then
 	moduleList=$(find *.zip -maxdepth 1 -type f  | sort -n);	
-	for module in $moduleList; do   
+	for module in $moduleList; do
+	    targetDir=`unzip -t $module | head -2 | tail -1 | awk '{print $2}' | awk 'BEGIN{FS="/"}{print $1}'`
+	    [ -d $targetDir ] && continue
+	    #echo "Need to unpack $module"
 	    unzip -o $module 3>&1 1>&2 2>&3 | tee $basedir/extract-$module.$target.err
 	done
-	
+
 	moduleList=$(find *.tar.gz -maxdepth 1 -type f  | sort -n);		
 	for module in $moduleList; do
+	    targetDir=`tar -tvf $module | head -1 | awk '{print $6}' | awk  'BEGIN{FS="/"}{print $1}'`
+	    [ -d $targetDir ] && continue
+	    #echo "Need to unpack $module"
 	    tar -xvf $module 3>&1 1>&2 2>&3 | tee $basedir/extract-$module.$target.err
 	done
+    else
+	echo "$makeMode not supported for 3rdParty files : delete manually if necessary."
+    fi
 }
 
 function testTarget(){
@@ -341,7 +352,7 @@ if [ $nargs -ge 2 ]; then
 
 	cd $basedir
         cd "3rdPartyLibs"
-        extractFiles
+        extractFiles $makeMode
         
 	echo ""
 	echo "*************************Compilation Finished*************************"
