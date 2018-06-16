@@ -40,4 +40,8 @@ GAMs that did not compile cleanly:
 1. WebStatisticGAM          
 1.1 Erroneous error : library already built.
 
-Now investigate the common errors where a second build works.
+Now investigate the common errors.
+
+(a) Erroneous report that first build had some errors relating to e.g. DigitalFilterGam.  Firstly ensure this is correct, so run a clean compile from the top level.
+- Ref https://stackoverflow.com/questions/24771737/include-generated-makefile-without-warning-message
+- Ref http://make.mad-scientist.net/papers/advanced-auto-dependency-generation/
