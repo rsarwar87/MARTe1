@@ -76,343 +76,374 @@ function echoError(){
 
 function getCompileList(){
 
-	lineIgnore_0='^#'
-	lineIgnore_1='^$'
+    lineIgnore_0='^#'
+    lineIgnore_1='^$'
 
-	command="grep -v ${lineIgnore_0} ${configFile} | grep -v ${lineIgnore_1}"
+    command="grep -v ${lineIgnore_0} ${configFile} | grep -v ${lineIgnore_1}"
 
-	compileList=`eval $command`
+    compileList=`eval $command`
 }
 
 function testCompileList(){
 
-	module_in=${1}
-	
-	for module_ in $compileList; do
-	    if [ $module_in = $module_ ]; then
-		return 1;
-	    fi
-	done
-	
-	return 0;
+    module_in=${1}
+
+    for module_ in $compileList; do
+        if [ $module_in = $module_ ]; then
+            return 1;
+        fi
+    done
+
+    return 0;
 }
 
 #1 - target
 #2 - mode
 function compileModules(){
 
-	targetModules=${1}
-	depth=${2}	
-	
-	if [ -n "$4" ]; then
-		echo ".$3. Is not empty"
-		makeModules=$3
-		folderModules=$4
-	else
-		makeModules=""
-		folderModules=$3		
-	fi	
+    targetModules=${1}
+    depth=${2}	
 
-	moduleList=$(find . -maxdepth $depth -type d  | sort -n);
-	workdir=$(pwd)
-	
-	for module in $moduleList; do
-	    module=${module:2}
-	    cd $module
-		    
-	    if [ -n "$module" ]; then
-	    
-	    	testTarget $module
-	    	isTarget=$?
-	    	    		
-	    	if [ $isTarget -eq 0 ]; then	    	   	
-			testCompileList $module
-			moduleInList=$?
+    if [ -n "$4" ]; then
+        echo ".$3. Is not empty"
+        makeModules=$3
+        folderModules=$4
+    else
+        makeModules=""
+        folderModules=$3		
+    fi	
+
+    moduleList=$(find . -maxdepth $depth -type d  | sort -n);
+    workdir=$(pwd)
+
+    for module in $moduleList; do
+        module=${module:2}
+        cd $module
+
+        if [ -n "$module" ]; then
+
+            testTarget $module
+            isTarget=$?
+
+            if [ $isTarget -eq 0 ]; then	    	   	
+                testCompileList $module
+                moduleInList=$?
 
 
-			if [ $moduleInList -eq 1 ]; then
-			    if [ -f Makefile.$targetModules ]; then
-				echo Compiling $module
-				make -f Makefile.${targetModules} ${makeModules} 3>&1 1>&2 2>&3 | tee $basedir/${folderModules}-$module.$target.err
-	#			echo "Next GAM"
-	#			read
-			   else
-					if [ -f Makefile ]; then
-						echo Compiling $module
-						make -f Makefile ${makeModules} 3>&1 1>&2 2>&3 | tee $basedir/${folderModules}-$module.$target.err		
-					fi		
-#				echo "GAM .$module. doesn't have Makefile."${targetModules}
-	#			echo "" > $basedir/$module.notgam
-			    fi
-		       else	       		
-		       		if [ -f Makefile -o -f Makefile.$targetModules ]; then
-			   		echo "" > $basedir/${folderModules}-$module.ignore
-			   	fi
-		       fi
-#		else
-#			echo "target dir: " $module
-#			read
-		fi
-	    fi
-	    cd $workdir
-	done
+                if [ $moduleInList -eq 1 ]; then
+                    if [ -f Makefile.$targetModules ]; then
+                        echo Compiling $module
+                        make -f Makefile.${targetModules} ${makeModules} 3>&1 1>&2 2>&3 | tee $basedir/${folderModules}-$module.$target.err
+                        #			echo "Next GAM"
+                        #			read
+                    else
+                        if [ -f Makefile ]; then
+                            echo Compiling $module
+                            make -f Makefile ${makeModules} 3>&1 1>&2 2>&3 | tee $basedir/${folderModules}-$module.$target.err		
+                        fi		
+                        #				echo "GAM .$module. doesn't have Makefile."${targetModules}
+                        #			echo "" > $basedir/$module.notgam
+                    fi
+                else	       		
+                    if [ -f Makefile -o -f Makefile.$targetModules ]; then
+                        echo "" > $basedir/${folderModules}-$module.ignore
+                    fi
+                fi
+                #		else
+                #			echo "target dir: " $module
+                #			read
+            fi
+        fi
+        cd $workdir
+    done
 }
 
 function extractFiles(){	
-    
+
     if [ "$makeMode" = "all" ]
     then
-	moduleList=$(find *.zip -maxdepth 1 -type f  | sort -n);	
-	for module in $moduleList; do
-	    targetDir=`unzip -t $module | head -2 | tail -1 | awk '{print $2}' | awk 'BEGIN{FS="/"}{print $1}'`
-	    [ -d $targetDir ] && continue
-	    #echo "Need to unpack $module"
-	    unzip -o $module 3>&1 1>&2 2>&3 | tee $basedir/extract-$module.$target.err
-	done
+        moduleList=$(find *.zip -maxdepth 1 -type f  | sort -n);	
+        for module in $moduleList; do
+            targetDir=`unzip -t $module | head -2 | tail -1 | awk '{print $2}' | awk 'BEGIN{FS="/"}{print $1}'`
+            [ -d $targetDir ] && continue
+            #echo "Need to unpack $module"
+            unzip -o $module 3>&1 1>&2 2>&3 | tee $basedir/extract-$module.$target.err
+        done
 
-	moduleList=$(find *.tar.gz -maxdepth 1 -type f  | sort -n);		
-	for module in $moduleList; do
-	    targetDir=`tar -tvf $module | head -1 | awk '{print $6}' | awk  'BEGIN{FS="/"}{print $1}'`
-	    [ -d $targetDir ] && continue
-	    #echo "Need to unpack $module"
-	    tar -xvf $module 3>&1 1>&2 2>&3 | tee $basedir/extract-$module.$target.err
-	done
+        moduleList=$(find *.tar.gz -maxdepth 1 -type f  | sort -n);		
+        for module in $moduleList; do
+            targetDir=`tar -tvf $module | head -1 | awk '{print $6}' | awk  'BEGIN{FS="/"}{print $1}'`
+            [ -d $targetDir ] && continue
+            #echo "Need to unpack $module"
+            tar -xvf $module 3>&1 1>&2 2>&3 | tee $basedir/extract-$module.$target.err
+        done
     else
-	echo "$makeMode not supported for 3rdParty files : delete manually if necessary."
+        echo "$makeMode not supported for 3rdParty files : delete manually if necessary."
     fi
 }
 
 function testTarget(){
 
-	for i in ${targetList[@]}; do
-		if [ $1 = $i ]; then
-			return 1;
-		fi
-	done
+    for i in ${targetList[@]}; do
+        if [ $1 = $i ]; then
+            return 1;
+        fi
+    done
 
-	return 0;
+    return 0;
 }
 
 function testMakeModes(){
 
-	for i in ${makeModesList[@]}; do
-		if [ $1 = $i ]; then
-			return 1;
-		fi
-	done
+    for i in ${makeModesList[@]}; do
+        if [ $1 = $i ]; then
+            return 1;
+        fi
+    done
 
-	return 0;
+    return 0;
 }
 
 function getList(){
 
-	name="'"$1"*.$target.err'"
-	if [ $2 = "err" ]; then
-		command="find . -maxdepth 1 -type f -size +0k -name ${name} | sort -n"
-		text="that did not compile cleanly:"
+    name="'"$1"*.$target.err'"
+    if [ $2 = "err" ]; then
+        command="find . -maxdepth 1 -type f -size +0k -name ${name} | sort -n"
+        text="that did not compile cleanly:"
         mode="\033[0;31m"
-	else
+    else
 
-		if [ $2 = "ignore" ]; then
-			name="'"$1"*.ignore'"
-			command="find . -maxdepth 1 -type f -name ${name} | sort -n"
-			text="ignored on compilation:"
+        if [ $2 = "ignore" ]; then
+            name="'"$1"*.ignore'"
+            command="find . -maxdepth 1 -type f -name ${name} | sort -n"
+            text="ignored on compilation:"
             mode="\033[0;33m"
-		else		
-			command="find . -maxdepth 1 -type f -size 0k -name ${name} | sort -n"
+        else		
+            command="find . -maxdepth 1 -type f -size 0k -name ${name} | sort -n"
             mode="\033[0;32m"
-			text="compiled without errors or warnings"
-		fi
-	fi
+            text="compiled without errors or warnings"
+        fi
+    fi
 
-	modules=`eval $command`       
+    modules=`eval $command`       
 
     echo -ne $mode
-	echo "$1 $text"
+    echo "$1 $text"
 
-	count=0
-	for module in $modules; do
-	    module=${module:2}
-	    module=${module/"$1-"/""}
-	    module=${module/".$target.err"/""}
-	    module=${module/".ignore"/""}
-	    out=$out""$module
-	    echo "    " $module
-	    count=$(( $count + 1))
+    count=0
+    for module in $modules; do
+        module=${module:2}
+        module=${module/"$1-"/""}
+        module=${module/".$target.err"/""}
+        module=${module/".ignore"/""}
+        out=$out""$module
+        echo "    " $module
+        count=$(( $count + 1))
 
-	    if [ $2 = "err" ]; then
-		echo "    ""    ""Error file" $1"-"$module".$target.err"
-	    else
-		if [ $2 = "ignore" ]; then
-			rm -rf $1"-"$module".ignore"
-		else
-			rm -rf $1"-"$module".$target.err"	
-		fi	
-	    fi
+        if [ $2 = "err" ]; then
+            echo "    ""    ""Error file" $1"-"$module".$target.err"
+        else
+            if [ $2 = "ignore" ]; then
+                rm -rf $1"-"$module".ignore"
+            else
+                rm -rf $1"-"$module".$target.err"	
+            fi	
+        fi
 
-	done
+    done
 
-	echo "$count $1 in range"
-	
+    echo "$count $1 in range"
+
     echo -ne "\033[0;0m"
+}
+
+function identifyDistribution () {
+
+    if [ $(which lsb_release) ] 
+    then
+        distributionVersion="$(lsb_release -i -s).$(lsb_release -r -s)"
+    else
+        distributionVersion="OSunknown.Vunknown"
+    fi
+
+    echo $distributionVersion
+}
+
+function continuousIntegrationLog () {
+    # Capture build errors as a function of date, branch, commit, OS for continuous improvement
+    #
+    dateStamp=$(date -Iseconds)
+    distributionVersion=$(identifyDistribution)
+    #echo "Distribution : ${distributionVersion}"
+    CI_DIR=Documentation/CI/${distributionVersion}/${dateStamp}
+    mkdir -p ${CI_DIR}
+    mv *.err  ${CI_DIR}
+    echo "$0 $target $configFile $makeMode" >> ${CI_DIR}/build.md
+    echo "executed by $USER at $(hostname) on $dateStamp in $(pwd)" >> ${CI_DIR}/build.md
+    git remote show origin >> ${CI_DIR}/build.md
+    echo "Branches" >> ${CI_DIR}/build.md
+    git branch >> ${CI_DIR}/build.md
+
+    echo "Error logs captured and stored in ${CI_DIR}"
 }
 
 if [ $nargs -ge 2 ]; then
 
-	if [ $nargs -gt 3 ]; then
-		echo "Invalid number of arguments ["$nargs"]. Usage: compile.MARTe <target> <configFile> <makeMode>"	
-		exit
-	fi
+    if [ $nargs -gt 3 ]; then
+        echo "Invalid number of arguments ["$nargs"]. Usage: compile.MARTe <target> <configFile> <makeMode>"	
+        exit
+    fi
 
-	if [ $nargs -eq 2 -o $nargs -eq 3 ]; then
+    if [ $nargs -eq 2 -o $nargs -eq 3 ]; then
 
-		#Test target
-		testTarget "$target"
-		validTarget=$?
-		if [ $validTarget -eq 0 ]; then
-			echo "target argument is invalid. Use one of these:" ${targetList[@]}	
-			exit
-		fi
-	fi	
+        #Test target
+        testTarget "$target"
+        validTarget=$?
+        if [ $validTarget -eq 0 ]; then
+            echo "target argument is invalid. Use one of these:" ${targetList[@]}	
+            exit
+        fi
+    fi	
 
-	if [ $nargs -eq 3 ]; then
+    if [ $nargs -eq 3 ]; then
 
-		#Test make modes
-		testMakeModes "$makeMode"
-		validMode=$?
-		if [ $validMode -eq 0 ]; then
-			echo "makeMode argument is invalid. Use one of these:" ${makeModesList[@]}	
-			exit
-		fi
-	fi
-	
-	if [ ! -r $configFile ]; then
-		echo "config file not exists: " $configFile
-		exit
-	fi	
+        #Test make modes
+        testMakeModes "$makeMode"
+        validMode=$?
+        if [ $validMode -eq 0 ]; then
+            echo "makeMode argument is invalid. Use one of these:" ${makeModesList[@]}	
+            exit
+        fi
+    fi
 
-	rm -f *.$target.err
-	rm -f *.ignore
+    if [ ! -r $configFile ]; then
+        echo "config file not exists: " $configFile
+        exit
+    fi	
 
-	getCompileList
+    rm -f *.$target.err
+    rm -f *.ignore
 
-	cd $basedir
-	cd $BaseLib2_dir
-	echo "Compiling Baselib2 in dir" $BaseLib2_dir
-	make -f Makefile.$target $makeMode 3>&1 1>&2 2>&3 | tee $basedir/BaseLib2.$target.err
-	echo "Baselib compilation finished"
+    getCompileList
 
-	cd $basedir	
-	cd $MARTe_dir
-	echo "Compiling MARTe in dir" $MARTe_dir
-	make -f Makefile.$target $makeMode 3>&1 1>&2 2>&3 | tee $basedir/MARTe.$target.err
-	echo "MARTe compilation finished"
+    cd $basedir
+    cd $BaseLib2_dir
+    echo "Compiling Baselib2 in dir" $BaseLib2_dir
+    make -f Makefile.$target $makeMode 3>&1 1>&2 2>&3 | tee $basedir/BaseLib2.$target.err
+    echo "Baselib compilation finished"
 
-	cd $basedir	
-	cd $IOGAMs_dir
-	echo "Compiling IOGAMs in dir" $MARTe_dir
-	make -f Makefile.$target $makeMode 3>&1 1>&2 2>&3 | tee $basedir/IOGAMs.$target.err
-	echo "IOGAMs compilation finished"
+    cd $basedir	
+    cd $MARTe_dir
+    echo "Compiling MARTe in dir" $MARTe_dir
+    make -f Makefile.$target $makeMode 3>&1 1>&2 2>&3 | tee $basedir/MARTe.$target.err
+    echo "MARTe compilation finished"
 
-	cd $basedir
-	cd $GAMs_dir
-	echo "Compiling GAMs in dir" $GAMs_dir
-	compileModules $target 1 $makeMode "GAMs"
-	echo "GAMs compilation finished"
+    cd $basedir	
+    cd $IOGAMs_dir
+    echo "Compiling IOGAMs in dir" $MARTe_dir
+    make -f Makefile.$target $makeMode 3>&1 1>&2 2>&3 | tee $basedir/IOGAMs.$target.err
+    echo "IOGAMs compilation finished"
 
-	cd $basedir
-	cd $IOGAMs_dir
-	echo "Compiling IOGAMs in dir" $IOGAMs_dir
-	compileModules $target 1 $makeMode "IOGAMs"
-	echo "IOGAMs compilation finished"
+    cd $basedir
+    cd $GAMs_dir
+    echo "Compiling GAMs in dir" $GAMs_dir
+    compileModules $target 1 $makeMode "GAMs"
+    echo "GAMs compilation finished"
 
-	cd $basedir
-	cd $Interfaces_dir
-	echo "Compiling Interfaces in dir" $Interfaces_dir
-	compileModules $target 1 $makeMode "Interfaces"
-	echo "Interfaces compilation finished"
+    cd $basedir
+    cd $IOGAMs_dir
+    echo "Compiling IOGAMs in dir" $IOGAMs_dir
+    compileModules $target 1 $makeMode "IOGAMs"
+    echo "IOGAMs compilation finished"
 
-	cd $basedir
-	cd $InterfaceHTTP_dir
-	echo "Compiling Interfaces HTTP in dir" $InterfaceHTTP_dir
-	compileModules $target 1 $makeMode "Interfaces-HTTP"
-	echo "Interfaces HTTP compilation finished"
+    cd $basedir
+    cd $Interfaces_dir
+    echo "Compiling Interfaces in dir" $Interfaces_dir
+    compileModules $target 1 $makeMode "Interfaces"
+    echo "Interfaces compilation finished"
 
-	cd $basedir
-	cd $InterfaceLogger_dir
-	echo "Compiling Interfaces Logger in dir" $InterfaceLogger_dir
-	compileModules $target 1 $makeMode "Interfaces-Logger"
-	echo "Interfaces Logger compilation finished"
-	
-	cd $basedir
-	cd $InterfaceTimeServiceActivities_dir
-	echo "Compiling Interfaces Time Service Activities in dir" $InterfaceTimeServiceActivities_dir
-	compileModules $target 1 $makeMode "Interfaces-TimeServiceActivities"
-	echo "Interfaces Time Service Activities compilation finished"
+    cd $basedir
+    cd $InterfaceHTTP_dir
+    echo "Compiling Interfaces HTTP in dir" $InterfaceHTTP_dir
+    compileModules $target 1 $makeMode "Interfaces-HTTP"
+    echo "Interfaces HTTP compilation finished"
 
-	cd $basedir
-        cd "3rdPartyLibs"
-        extractFiles $makeMode
-        
-	echo ""
-	echo "*************************Compilation Finished*************************"
-	echo ""
-	echo "********************************Report********************************"
-	
-	cd $basedir
-	BaseLib2Error=$(find . -maxdepth 1 -type f -size +0k -name 'BaseLib2.$target.err' | sort -n);
-	if [ -n "$BaseLib2Error" ]; then
+    cd $basedir
+    cd $InterfaceLogger_dir
+    echo "Compiling Interfaces Logger in dir" $InterfaceLogger_dir
+    compileModules $target 1 $makeMode "Interfaces-Logger"
+    echo "Interfaces Logger compilation finished"
+
+    cd $basedir
+    cd $InterfaceTimeServiceActivities_dir
+    echo "Compiling Interfaces Time Service Activities in dir" $InterfaceTimeServiceActivities_dir
+    compileModules $target 1 $makeMode "Interfaces-TimeServiceActivities"
+    echo "Interfaces Time Service Activities compilation finished"
+
+    cd $basedir
+    cd "3rdPartyLibs"
+    extractFiles $makeMode
+
+    echo ""
+    echo "*************************Compilation Finished*************************"
+    echo ""
+    echo "********************************Report********************************"
+
+    cd $basedir
+    BaseLib2Error=$(find . -maxdepth 1 -type f -size +0k -name 'BaseLib2.$target.err' | sort -n);
+    if [ -n "$BaseLib2Error" ]; then
         echoError "BaseLib2" ${BaseLib2Error:2}
-	else
+    else
         echoSuccess "BaseLib2"
-		rm -rf "BaseLib2.$target.err"
-	fi
+        rm -rf "BaseLib2.$target.err"
+    fi
 
-	MARTeError=$(find . -maxdepth 1 -type f -size +0k -name 'MARTe.$target.err' | sort -n);
-	if [ -n "$MARTeError" ]; then
+    MARTeError=$(find . -maxdepth 1 -type f -size +0k -name 'MARTe.$target.err' | sort -n);
+    if [ -n "$MARTeError" ]; then
         echoError "MARTe" ${MARTeError:2}
-	else
+    else
         echoSuccess "MARTe"
-		rm -rf "MARTe.$target.err"
-	fi
+        rm -rf "MARTe.$target.err"
+    fi
 
-	IOGAMsError=$(find . -maxdepth 1 -type f -size +0k -name 'IOGAMs.$target.err' | sort -n);
-	if [ -n "$IOGAMsError" ]; then
-		echoError "IOGAMs" ${IOGAMsError:2}
-	else
-		echoSuccess "IOGAMs"
-		rm -rf "IOGAMs.$target.err"
-	fi
-	
-	#Remove empty files
-	extractError=$(find . -maxdepth 1 -type f -size 0k -name "extract-*.$target.err" | sort -n);
-	for file in $extractError; do   
-            rm -rf $file
-	done
-		
-	echo ""	
-	getList "GAMs" "success"
-	echo ""
-	getList "GAMs" "err"
-	echo ""	
-	getList "GAMs" "ignore"
-	echo ""	
-	getList "IOGAMs" "success"
-	echo ""
-	getList "IOGAMs" "err"
-	echo ""
-	getList "IOGAMs" "ignore"
+    IOGAMsError=$(find . -maxdepth 1 -type f -size +0k -name 'IOGAMs.$target.err' | sort -n);
+    if [ -n "$IOGAMsError" ]; then
+        echoError "IOGAMs" ${IOGAMsError:2}
+    else
+        echoSuccess "IOGAMs"
+        rm -rf "IOGAMs.$target.err"
+    fi
 
-	echo ""	
-	getList "Interfaces" "success"
-	echo ""
-	getList "Interfaces" "err"
-	echo ""
-	getList "Interfaces" "ignore"
+    #Remove empty files
+    extractError=$(find . -maxdepth 1 -type f -size 0k -name "extract-*.$target.err" | sort -n);
+    for file in $extractError; do   
+        rm -rf $file
+    done
 
-	echo ""
-	getList "extract" "err"
+    echo ""	
+    getList "GAMs" "success"
+    echo ""
+    getList "GAMs" "err"
+    echo ""	
+    getList "GAMs" "ignore"
+    echo ""	
+    getList "IOGAMs" "success"
+    echo ""
+    getList "IOGAMs" "err"
+    echo ""
+    getList "IOGAMs" "ignore"
 
+    echo ""	
+    getList "Interfaces" "success"
+    echo ""
+    getList "Interfaces" "err"
+    echo ""
+    getList "Interfaces" "ignore"
+
+    echo ""
+    getList "extract" "err"
+
+    continuousIntegrationLog
 else
-	echo "Invalid number of arguments ["$nargs"]. Usage: compile.MARTe <target> <configFile> <makeMode>"
+    echo "Invalid number of arguments ["$nargs"]. Usage: compile.MARTe <target> <configFile> <makeMode>"
 fi
