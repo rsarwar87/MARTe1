@@ -14,14 +14,30 @@ Fork from github/AdamVStephen ; fix-compilation-script branch (sources on master
 
 GAMs that did not compile cleanly:
 
-DataCollectionGAM                                  
-DelayGAM                                        
-DigitalFilterGAM                                     
-ExpEval                                              
-PIDGAM                                            
-PlottingGAM                                                                          
-StatisticGAM                                      
-StorageGAM                              
-WaterTank         
-WaveformGenerator2009
-WebStatisticGAM          
+1. DataCollectionGAM                                  
+1.1 Repeat manual build in local directory succeeeds
+1. DelayGAM                                        
+1.1 Repeat manual build in local directory succeeeds
+1. DigitalFilterGAM                                     
+1.1 Erroneous error : library already built.
+1. ExpEval                                              
+1.1 Erroneous error : library already built.
+1. PIDGAM                                            
+1.1 Repeat manual build in local directory succeeeds
+1. PlottingGAM                                                                          
+1.1 Erroneous error : library already built.
+1. StatisticGAM                                      
+1.1 Erroneous error : library already built.
+1. StorageGAM                              
+1.1 Erroneous error : library already built.
+1.1 WaterTank         
+1.1 Erroneous error : library already built.
+1. WaveformGenerator2009
+1.1 No linux/ directory because depends target fails due to dependency on non-existence ExpressionEvaluator2009 in WaveformEquationSolver
+1.2 Makefile.inc has commented out WaveformEquationSolver module but the depends rules still find matching on pattern.
+1.3 Solution : rename the code to be suffixed .disabled
+1.4 Solution : make the top level depends rules work to create the linux/ subdirectory first (ewhittaker fork)
+1. WebStatisticGAM          
+1.1 Erroneous error : library already built.
+
+Now investigate the common errors where a second build works.
