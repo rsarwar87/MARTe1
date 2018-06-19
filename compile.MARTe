@@ -283,6 +283,7 @@ function continuousIntegrationLog () {
     git remote show origin >> ${CI_DIR}/build.md
     echo "Branches" >> ${CI_DIR}/build.md
     git branch >> ${CI_DIR}/build.md
+    ln -f -s ${CI_DIR} ci.last
 
     echo "Error logs captured and stored in ${CI_DIR}"
 }

@@ -45,7 +45,7 @@ all: $(OBJS) \
 	$(TARGET)/ReplayDrv$(DRVEXT)
 	echo  $(OBJS)
 
-include depends.$(TARGET)
+#include depends.$(TARGET)
 
 include $(MAKEDEFAULTDIR)/MakeStdLibRules.$(TARGET)
 

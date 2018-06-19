@@ -61,7 +61,7 @@ all: $(OBJS)    \
 	$(TARGET)/BTDExample1$(EXEEXT)
 	echo  $(OBJS)
 
-include depends.$(TARGET)
+#include depends.$(TARGET)
 
 include $(MAKEDEFAULTDIR)/MakeStdLibRules.$(TARGET)
 

@@ -48,7 +48,7 @@ all: $(OBJS)    \
 	$(TARGET)/BaseLib3S$(LIBEXT) 
 	echo  $(OBJS)
 
-include depends.$(TARGET)
+#include depends.$(TARGET)
 
 
 include $(MAKEDEFAULTDIR)/MakeStdLibRules.$(TARGET)

@@ -41,6 +41,6 @@ CFLAGS+= -I../../BaseLib2/Level6
 all: $(OBJS) \
 	$(TARGET)/PlottingGAM$(GAMEXT)
 
-include depends.$(TARGET)
+#include depends.$(TARGET)
 
 include $(MAKEDEFAULTDIR)/MakeStdLibRules.$(TARGET)

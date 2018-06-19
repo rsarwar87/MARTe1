@@ -39,7 +39,7 @@ LDFLAGS+= -L /usr/lib64 -lpxi6259
 all: $(OBJS)  $(TARGET)/NI6259Drv$(GAMEXT)
 	echo "`pwd` - build complete [$(OBJS)] -"
 
-include depends.$(TARGET)
+#include depends.$(TARGET)
 
 include $(MAKEDEFAULTDIR)/MakeStdLibRules.$(TARGET)
 

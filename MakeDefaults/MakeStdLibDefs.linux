@@ -43,6 +43,12 @@ OBJS2=  $(OBJSX2:%.x=linux/%.o)
 
 OBJS3=  $(OBJSX3:%.x=linux/%.o) 
 
+DEPDIR := .d
+
+DEPFLAGS = -MT $@ -MMD -MP -MF $(DEPDIR)/$*.Td
+
+POSTCOMPILE = @mv -f $(DEPDIR)/$*.Td $(DEPDIR)/$*.d && touch $@
+
 SUBPROJ = $(SPB:%.x=%.spb)
 SUBPROJC = $(SPB:%.x=%.spc)
 SUBPROJ2 = $(SPB2:%.x=%.spb)

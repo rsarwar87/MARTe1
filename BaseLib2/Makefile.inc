@@ -54,7 +54,7 @@ all: $(OBJS) $(SUBPROJ)\
 
 $(TARGET)/BaseLib2$(DLLEXT) : $(BLCOMPONENTS)
 
-include depends.$(TARGET)
+#include depends.$(TARGET)
 
 include $(MAKEDEFAULTDIR)/MakeStdLibRules.$(TARGET)
 

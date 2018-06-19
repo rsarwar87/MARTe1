@@ -43,7 +43,7 @@ all:    $(OBJS) \
 	$(TARGET)/TCPConfigurationHandler$(DLLEXT)
 	echo $(OBJS)
 
-include depends.$(TARGET)
+#include depends.$(TARGET)
 
 include $(MAKEDEFAULTDIR)/MakeStdLibRules.$(TARGET)
 

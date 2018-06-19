@@ -44,7 +44,7 @@ CFLAGS+= -I../../BaseLib2/LoggerService
 all: $(OBJS)   	$(TARGET)/SSM$(GAMEXT)
 	echo  $(OBJS)
 
-include depends.$(TARGET)
+#include depends.$(TARGET)
 
 include $(MAKEDEFAULTDIR)/MakeStdLibRules.$(TARGET)
 

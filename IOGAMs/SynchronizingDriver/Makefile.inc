@@ -43,7 +43,7 @@ CFLAGS+= -I../../BaseLib2/Level6
 all:  $(OBJS) $(TARGET)/SynchronizingDriver$(GAMEXT) 
 	echo $(OBJS)
 
-include depends.$(TARGET)
+#include depends.$(TARGET)
 
 include $(MAKEDEFAULTDIR)/MakeStdLibRules.$(TARGET)
 

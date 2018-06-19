@@ -45,7 +45,7 @@ all: $(OBJS) \
 	$(TARGET)/UDPDrv$(GAMEXT)  
 	echo  $(OBJS)
 
-include depends.$(TARGET)
+#include depends.$(TARGET)
 
 include $(MAKEDEFAULTDIR)/MakeStdLibRules.$(TARGET)
 

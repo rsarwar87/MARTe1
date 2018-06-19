@@ -45,7 +45,7 @@ all:  $(OBJS) $(TARGET)/StreamingDriver$(GAMEXT) \
     $(TARGET)/ReceiverTest$(EXEEXT) 
 	echo $(OBJS)
 
-include depends.$(TARGET)
+#include depends.$(TARGET)
 
 include $(MAKEDEFAULTDIR)/MakeStdLibRules.$(TARGET)
 

@@ -26,13 +26,24 @@
 ctags : %.cpp %.c %.h
 	ctags -R
 
-linux/%.o : %.cpp
-	$(COMPILER) -c $(OPTIM) $(CFLAGS) $(CPPFLAGS) $(CFLAGSPEC) $(DEBUG)  $*.cpp -o linux/$*.o
-#	$(COMPILER) -S $(OPTIM) $(CFLAGS) $(CFLAGSPEC) $(DEBUG)  $*.cpp -o linux/$*.s
+$(DEPDIR)/.force_mkdir : ;
+	  $(shell mkdir -p $(DEPDIR) > /dev/null)
+	  touch $@
 
-linux/%.o : %.c
-	$(CCOMPILER) -c $(CFLAGS) $(CFLAGSPEC) $(DEBUG) $(OPTIM)  $*.c -o linux/$*.o
-#	$(COMPILER) -S $(CFLAGS) $(CFLAGSPEC) $(DEBUG) $(OPTIM)  $*.c -o linux/$*.s
+linux/.force_mkdir: 
+	  $(shell mkdir -p linux > /dev/null)
+	  touch $@
+
+
+linux/%.o : %.cpp $(DEPDIR)/%.d linux/.force_mkdir $(DEPDIR)/.force_mkdir
+	$(COMPILER) -c $(OPTIM) $(DEPFLAGS) $(CFLAGS) $(CPPFLAGS) $(CFLAGSPEC) $(DEBUG)  $*.cpp -o linux/$*.o
+#	$(COMPILER) -S $(OPTIM) $(DEPFLAGS) $(CFLAGS) $(CFLAGSPEC) $(DEBUG)  $*.cpp -o linux/$*.s
+	$(POSTCOMPILE)
+
+linux/%.o : %.c  $(DEPDIR)/%.d linux/.force_mkdir $(DEPDIR)/.force_mkdir
+	$(CCOMPILER) $(DEPFLAGS) -c $(CFLAGS) $(CFLAGSPEC) $(DEBUG) $(OPTIM)  $*.c -o linux/$*.o
+#	$(COMPILER) $(DEPFLAGS) -S $(CFLAGS) $(CFLAGSPEC) $(DEBUG) $(OPTIM)  $*.c -o linux/$*.s
+	$(POSTCOMPILE)
 
 linux/%.a : $(OBJS)
 	touch $@
@@ -60,6 +71,10 @@ linux/%.exe : linux/%.o
 
 linux/%.ex : linux/%.o $(OBJS)
 	$(COMPILER) linux/$*.o $(OBJS) $(LIBRARIES)  -o linux/$*.ex
+
+
+$(DEPDIR)/%.d: ;
+.PRECIOUS: $(DEPDIR)/%.d
 
 depends.linux: dependsRaw.linux 
 	sed -f $(MAKEDEFAULTDIR)/CreateLinuxDepends.sed dependsRaw.linux >depends.linux
@@ -90,3 +105,4 @@ clean:  $(SUBPROJC)
 	rm -rf $(TARGET)
 
 
+include $(wildcard $(patsubst %,$(DEPDIR)/%.d, $(basename $(SRCS))))

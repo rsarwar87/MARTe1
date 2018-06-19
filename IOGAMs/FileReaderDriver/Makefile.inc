@@ -45,6 +45,6 @@ all: $(OBJS) \
 	$(TARGET)/FileReadDrv$(DRVEXT)  
 	echo  $(OBJS)
 
-include depends.$(TARGET)
+#include depends.$(TARGET)
 
 include $(MAKEDEFAULTDIR)/MakeStdLibRules.$(TARGET)

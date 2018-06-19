@@ -45,7 +45,7 @@ all:	$(OBJS) $(SUBPROJ) $(TARGET)/ATCAadcDrv$(GAMEXT) \
 	                   $(TARGET)/driver_test$(EXEEXT)
 	echo  $(OBJS)
 
-include depends.$(TARGET)
+#include depends.$(TARGET)
 
 include $(MAKEDEFAULTDIR)/MakeStdLibRules.$(TARGET)
 

@@ -45,7 +45,7 @@ all: $(OBJS)    \
 		$(TARGET)/BaseLib2AdapterTest$(EXEEXT)
 	echo  $(OBJS)
 
-include depends.$(TARGET)
+#include depends.$(TARGET)
 
 include $(MAKEDEFAULTDIR)/MakeStdLibRules.$(TARGET)
 

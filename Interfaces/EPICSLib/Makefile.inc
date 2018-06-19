@@ -57,6 +57,6 @@ all: $(OBJS)  \
 	$(TARGET)/EPICSHandler$(DLLEXT)
 	echo $(OBJS)
 
-include depends.$(TARGET)
+#include depends.$(TARGET)
 
 include $(MAKEDEFAULTDIR)/MakeStdLibRules.$(TARGET)

@@ -39,7 +39,7 @@ CFLAGS+= -I../../BaseLib2/LoggerService
 all: $(OBJS) \
     $(TARGET)/SpringMassModel$(GAMEXT)
 
-include depends.$(TARGET)
+#include depends.$(TARGET)
 
 include $(MAKEDEFAULTDIR)/MakeStdLibRules.$(TARGET)
 

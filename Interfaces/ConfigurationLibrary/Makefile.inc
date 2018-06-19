@@ -44,7 +44,7 @@ all:    $(OBJS) \
 	$(TARGET)/MessageSender$(EXEEXT)  
 	echo $(OBJS)
 
-include depends.$(TARGET)
+#include depends.$(TARGET)
 
 include $(MAKEDEFAULTDIR)/MakeStdLibRules.$(TARGET)
 

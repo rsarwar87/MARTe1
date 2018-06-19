@@ -38,7 +38,7 @@ CFLAGS+= -I/opt/codac-3.1/epics/base/include/os/Linux
 
 all: $(OBJS) $(TARGET)/EPICSDrv$(GAMEXT)
 
-include depends.$(TARGET)
+#include depends.$(TARGET)
 
 include $(MAKEDEFAULTDIR)/MakeStdLibRules.$(TARGET)
 

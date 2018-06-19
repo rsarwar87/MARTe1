@@ -41,7 +41,7 @@ CFLAGS+= -I../../Interfaces/ConfigurationLibrary
 all: $(OBJS) \
 	$(TARGET)/DelayGAM$(GAMEXT)
 
-include depends.$(TARGET)
+#include depends.$(TARGET)
 
 include $(MAKEDEFAULTDIR)/MakeStdLibRules.$(TARGET)
 

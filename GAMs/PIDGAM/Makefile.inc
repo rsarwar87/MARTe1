@@ -42,7 +42,7 @@ all: $(OBJS) \
     PIDGAMClassInfo.sinfo.cpp\
     $(TARGET)/PIDGAM$(GAMEXT)
 
-include depends.$(TARGET)
+#include depends.$(TARGET)
 
 include $(MAKEDEFAULTDIR)/MakeStdLibRules.$(TARGET)
 
