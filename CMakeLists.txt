@@ -49,7 +49,9 @@ find_package(Threads REQUIRED)
 find_package(Curses REQUIRED)
 
 add_subdirectory(BaseLib2)
-add_subdirectory(GAMs/WebStatisticGAM)
-add_subdirectory(Interfaces)
-
 add_subdirectory(MARTe)
+add_subdirectory(Interfaces)
+add_subdirectory(IOGAMs)
+add_subdirectory(GAMs)
+
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/Examples DESTINATION ${build_dir})

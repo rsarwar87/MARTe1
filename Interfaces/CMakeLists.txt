@@ -33,7 +33,7 @@ set(CMAKE_C_FLAGS "${default_c_flag} -finline-functions -fPIC -frtti")
 set(CMAKE_CXX_FLAGS_DEBUG "${default_cxx_flag} -finline-functions -g -fPIC")
 endif()
 
-add_definitions(-D_PTHREAD)
+add_definitions(-DUSE_PTHREAD)
 
 set(CMAKE_LINK_LIBRARY_SUFFIX "")
 set(CMAKE_EXECUTABLE_SUFFIX ".ex")     # lib

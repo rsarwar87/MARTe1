@@ -5,7 +5,7 @@ file(GLOB SRC_FILES ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp)
 file(GLOB SRC_FILES2 ${CMAKE_CURRENT_SOURCE_DIR}/*.c)
 file(GLOB HDR_FILES ${CMAKE_CURRENT_SOURCE_DIR}/*.h)
 
-add_library(BLlvl2 STATIC ${SRC_FILES} ${SRC_FILES2} ${HDR_FILES})
-target_link_libraries(BLlvl2 m dl nsl pthread rt ncurses)
-target_link_libraries(BLlvl2 BLlvl0 BLlvl1)
+add_library(BaseLib2S STATIC ${SRC_FILES} ${SRC_FILES2} ${HDR_FILES})
+target_link_libraries(BaseLib2S m dl nsl pthread rt ncurses)
+target_link_libraries(BaseLib2S BaseLib0S BaseLib1S)
 

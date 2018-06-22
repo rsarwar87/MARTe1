@@ -8,5 +8,5 @@ file(GLOB HDR_FILES ${CMAKE_CURRENT_SOURCE_DIR}/*.h)
 
 add_library(LoggerService STATIC ${SRC_FILES} ${SRC_FILES2} ${HDR_FILES})
 target_link_libraries(LoggerService m dl nsl pthread rt ncurses)
-target_link_libraries(LoggerService  BLlvl0 BLlvl1 BLlvl2 BLlvl3 BLlvl4 BLlvl5 BLlvl6 )
+target_link_libraries(LoggerService BaseLib0S BaseLib1S BaseLib2S BaseLib3S BaseLib4S BaseLib5S BaseLib6S )
 

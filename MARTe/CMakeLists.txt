@@ -21,16 +21,16 @@ include_directories(MARTeSupportLib)
 #TODO: Solaris, windows, vx  does not need this flag
 #windows and vx have optimization flags
 if (fLINUX) 
-    set(CMAKE_CXX_FLAGS "${default_cxx_flag}  -finline-functions -fPIC -frtti")
-    set(CMAKE_C_FLAGS "${default_c_flag} -finline-functions -fPIC")
-    set(CMAKE_CXX_FLAGS_DEBUG "${default_cxx_flag} -finline-functions -g -ggdb -fPIC")
+    set(CMAKE_CXX_FLAGS "${default_cxx_flag}  -g -ggdb -MMD -MP -MF  -fPIC -frtti")
+    set(CMAKE_C_FLAGS "${default_c_flag}  -fPIC")
+    set(CMAKE_CXX_FLAGS_DEBUG "${default_cxx_flag} -MMD -MP -MF  -g -ggdb -fPIC")
     add_definitions(-D_LINUX)
 endif()
 
 if (fMAC) 
-set(CMAKE_CXX_FLAGS "${default_cxx_flag} -finline-functions -fPIC -frtti")
-set(CMAKE_C_FLAGS "${default_c_flag} -finline-functions -fPIC -frtti")
-set(CMAKE_CXX_FLAGS_DEBUG "${default_cxx_flag} -finline-functions -g -fPIC")
+set(CMAKE_CXX_FLAGS "${default_cxx_flag}-fPIC -frtti")
+set(CMAKE_C_FLAGS "${default_c_flag}  -fPIC -frtti")
+set(CMAKE_CXX_FLAGS_DEBUG "${default_cxx_flag} -MMD -MP -MF  -g -fPIC")
 endif()
 
 add_definitions(-D_PTHREAD)

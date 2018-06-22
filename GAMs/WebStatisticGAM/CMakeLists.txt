@@ -1,49 +1,11 @@
 
-project(GAMs)
+message(STATUS " --WebStatisticGAM")
 
-message(STATUS "Starting to process GAMs")
-message(STATUS "-- WebStatistic")
-
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${build_dir}/GAMs/WebStatisticGAM)
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${build_dir}/GAMs/WebStatisticGAM)
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${build_dir}/GAMs/WebStatisticGAM)
-
-include_directories(${CMAKE_CURRENT_SOURCE_DIR})
-include_directories(../../BaseLib2/Level0)
-include_directories(../../BaseLib2/Level1)
-include_directories(../../BaseLib2/Level2)
-include_directories(../../BaseLib2/Level3)
-include_directories(../../BaseLib2/Level4)
-include_directories(../../BaseLib2/Level5)
-include_directories(../../BaseLib2/Level6)
-include_directories(../../BaseLib2/LoggerService)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/WebStatisticGAM)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/WebStatisticGAM)
 
 
-#TODO: Solaris, windows, vx  does not need this flag
-#windows and vx have optimization flags
-if (fLINUX) 
-    set(CMAKE_CXX_FLAGS "${default_cxx_flag} -finline-functions -fPIC -frtti")
-    set(CMAKE_C_FLAGS "${default_c_flag} -finline-functions -fPIC")
-    set(CMAKE_CXX_FLAGS_DEBUG "${default_cxx_flag} -finline-functions -g -ggdb -fPIC")
-    add_definitions(-D_LINUX)
-endif()
 
-if (fMAC) 
-set(CMAKE_CXX_FLAGS "${default_cxx_flag} -finline-functions -fPIC -frtti")
-set(CMAKE_C_FLAGS "${default_c_flag} -finline-functions -fPIC -frtti")
-set(CMAKE_CXX_FLAGS_DEBUG "${default_cxx_flag} -finline-functions -g -fPIC")
-endif()
-
-add_definitions(-D_PTHREAD)
-
-set(CMAKE_LINK_LIBRARY_SUFFIX "")
-set(CMAKE_EXECUTABLE_SUFFIX ".ex")     # lib
-set(CMAKE_STATIC_LIBRARY_PREFIX "")     # lib
-set(CMAKE_STATIC_LIBRARY_SUFFIX ".gam")      # .a
-set(CMAKE_SHARED_LIBRARY_PREFIX "")     # lib
-set(CMAKE_SHARED_LIBRARY_SUFFIX ".gam")     # .so
-
-
-add_library(WebStatisticGAM SHARED WebStatisticGAM.cpp WebStatisticGAM.h)
+add_library(WebStatisticGAM SHARED WebStatisticGAM.cpp WebStatisticGAM.h )
 target_link_libraries(WebStatisticGAM m dl nsl pthread rt ncurses)
-target_link_libraries(WebStatisticGAM BLlvl0 BLlvl1 BLlvl2 BLlvl3 BLlvl4 BLlvl5 BLlvl6 LoggerService)
+target_link_libraries(WebStatisticGAM BaseLib2 )
