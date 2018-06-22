@@ -20,14 +20,14 @@ include_directories(../BaseLib2/LoggerService)
 
 #TODO: Solaris, windows, vx  does not need this flag
 #windows and vx have optimization flags
-if (fLINUX) 
+if (fLINUX)
     set(CMAKE_CXX_FLAGS "${default_cxx_flag} -O2  -finline-functions -fPIC -frtti")
     set(CMAKE_C_FLAGS "${default_c_flag} -finline-functions -fPIC")
     set(CMAKE_CXX_FLAGS_DEBUG "${default_cxx_flag} -finline-functions -g -ggdb -fPIC")
     add_definitions(-D_LINUX)
 endif()
 
-if (fMAC) 
+if (fMAC)
 set(CMAKE_CXX_FLAGS "${default_cxx_flag} -finline-functions -fPIC -frtti")
 set(CMAKE_C_FLAGS "${default_c_flag} -finline-functions -fPIC -frtti")
 set(CMAKE_CXX_FLAGS_DEBUG "${default_cxx_flag} -finline-functions -g -fPIC")
@@ -47,6 +47,10 @@ add_subdirectory(ConfigurationLibrary)
 #add_subdirectory(EPICSlib)
 add_subdirectory(HTTP)
 add_subdirectory(Logger/RelayLogger)
+
+
+
+#logger-jt MDSInterface RTAIConsole SimulinkInterface
 #add_subdirectory(MDSInterface)
 #add_subdirectory(RTAIConsole)
 #add_subdirectory(SimulinkInterface)

@@ -9,6 +9,6 @@ file(GLOB SRC_FILES2 ${CMAKE_CURRENT_SOURCE_DIR}/*.c)
 file(GLOB HDR_FILES ${CMAKE_CURRENT_SOURCE_DIR}/*.h)
 
 
-add_library(StorageGAM SHARED ${SRC_FILES} ${SRC_FILES2} ${HDR_FILES})
-target_link_libraries(StorageGAM m dl nsl pthread rt ncurses)
-target_link_libraries(StorageGAM BaseLib2 )
+add_library(PIDGAM SHARED PIDGAM.cpp PIDGAMClassInfo.sinfo.cpp ${HDR_FILES})
+target_link_libraries(PIDGAM m dl nsl pthread rt ncurses)
+target_link_libraries(PIDGAM BaseLib2 )
