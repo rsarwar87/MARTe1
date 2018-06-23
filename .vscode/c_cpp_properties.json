@@ -1,0 +1,17 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "use/local/includle",
+                "use/includle",
+                "${workspaceFolder}/**"
+            ],
+            "defines": ["-DUSE_PTHREAD -D_LINUX"],
+            "compilerPath": "/usr/bin/g++",
+            "cStandard": "c11",
+            "cppStandard": "c++17"
+        }
+    ],
+    "version": 4
+}
