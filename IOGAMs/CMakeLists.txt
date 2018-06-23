@@ -21,21 +21,10 @@ include_directories(../BaseLib2/LoggerService)
 
 #TODO: Solaris, windows, vx  does not need this flag
 #windows and vx have optimization flags
-if (fLINUX)
-
-    set(CMAKE_CXX_FLAGS "${default_cxx_flag} -fPIC -frtti -MMD -MP -MF -g -ggdb")
-    set(CMAKE_C_FLAGS "${default_c_flag} -finline-functions -fPIC")
-    set(CMAKE_CXX_FLAGS_DEBUG "${default_cxx_flag} -finline-functions -g -ggdb -fPIC")
-    add_definitions(-D_LINUX)
-endif()
-
-if (fMAC)
-set(CMAKE_CXX_FLAGS "${default_cxx_flag} -finline-functions -fPIC -frtti")
-set(CMAKE_C_FLAGS "${default_c_flag} -finline-functions -fPIC -frtti")
-set(CMAKE_CXX_FLAGS_DEBUG "${default_cxx_flag} -finline-functions -g -fPIC")
-endif()
-
-add_definitions(-DUSE_PTHREAD)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${DFLAG_IOGAMs} ${DCXX_COMPILER_FLAG_EXE}")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${DFLAG_IOGAMs} ${DC_COMPILER_FLAG} ")
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} ${DFLAG_IOGAMs} ${DC_COMPILER_FLAG} ")
+    
 
 set(CMAKE_LINK_LIBRARY_SUFFIX "")
 set(CMAKE_EXECUTABLE_SUFFIX ".ex")     # lib
@@ -54,11 +43,25 @@ add_library(IOGAMs SHARED ${SRC_FILES} ${SRC_FILES2} ${HDR_FILES})
 target_link_libraries(IOGAMs m dl nsl pthread rt ncurses)
 target_link_libraries(IOGAMs BaseLib2 MARTeSupportLib)
 
-add_subdirectory(GenericTimerDriver)
-add_subdirectory(BinaryFileInput)
+if(IOGAMS_GenericTimerDriver)
+    add_subdirectory(GenericTimerDriver) 
+endif()
+if(IOGAMS_BinaryFileInput)
+    add_subdirectory(BinaryFileInput)
+endif()
+if(IOGAMS_CircularBufferSynchDriver)
 #add_subdirectory(CircularBufferSynchDriver)
-add_subdirectory(LinuxTimer)
-#add_subdirectory(LinuxATMDriver)
-add_subdirectory(StreamingDriver)
-add_subdirectory(SynchronizingDriver)
+endif()
+if(IOGAMS_LinuxTimer)
+    add_subdirectory(LinuxTimer)
+endif()
+if(IOGAMS_LinuxATMDriver)
+    #add_subdirectory(LinuxATMDriver)
+endif()
+if(IOGAMS_StreamingDriver)
+    add_subdirectory(StreamingDriver)
+endif()
+if(IOGAMS_SynchronizingDriver)
+    add_subdirectory(SynchronizingDriver)
+endif()
 # udp SrTrATCADriver SimulationTimerDriver SharedMemoryDriver FileReaderDriver

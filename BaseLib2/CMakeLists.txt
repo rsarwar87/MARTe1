@@ -7,27 +7,15 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${build_dir}/BaseLib2)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${build_dir}/BaseLib2)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${build_dir}/BaseLib2)
 
-message (${CMAKE_ARCHIVE_OUTPUT_DIRECTORY})
-include_directories(${CMAKE_CURRENT_SOURCE_DIR})
-
 
 #TODO: Solaris, windows, vx  does not need this flag
 #windows and vx have optimization flags
-if (fLINUX) 
-    set(CMAKE_CXX_FLAGS "${default_cxx_flag}   -MMD -MP -MF -finline-functions -fPIC -frtti  -g -ggdb ")
-    set(CMAKE_C_FLAGS "${default_c_flag} -MMD -MP -MF -finline-functions -fPIC")
-    set(CMAKE_CXX_FLAGS_DEBUG "${default_cxx_flag} -finline-functions -g -ggdb -fPIC")
-    add_definitions(-D_LINUX)
-endif()
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${DFLAG_BaseLib2} ${DCXX_COMPILER_FLAG_EXE}")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${DFLAG_BaseLib2} ${DC_COMPILER_FLAG} ")
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} ${DFLAG_BaseLib2} ${DC_COMPILER_FLAG} ")
+    
 
-if (fMAC) 
-set(CMAKE_CXX_FLAGS "${default_cxx_flag} -MMD -MP -MF -finline-functions -fPIC -frtti")
-set(CMAKE_C_FLAGS "${default_c_flag} -MMD -MP -MF -finline-functions -fPIC -frtti")
-set(CMAKE_CXX_FLAGS_DEBUG "${default_cxx_flag} -finline-functions -g -fPIC")
-endif()
-
-add_definitions(-DUSE_PTHREAD)
-
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 set(CMAKE_LINK_LIBRARY_SUFFIX "")
 set(CMAKE_EXECUTABLE_SUFFIX ".ex")     # lib
 set(CMAKE_STATIC_LIBRARY_PREFIX "lib")     # lib

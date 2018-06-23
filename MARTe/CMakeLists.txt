@@ -20,26 +20,18 @@ include_directories(MARTeSupportLib)
 
 #TODO: Solaris, windows, vx  does not need this flag
 #windows and vx have optimization flags
-if (fLINUX) 
-    set(CMAKE_CXX_FLAGS "${default_cxx_flag}  -g -ggdb -MMD -MP -MF  -fPIC -frtti")
-    set(CMAKE_C_FLAGS "${default_c_flag}  -fPIC")
-    set(CMAKE_CXX_FLAGS_DEBUG "${default_cxx_flag} -MMD -MP -MF  -g -ggdb -fPIC")
-    add_definitions(-D_LINUX)
-endif()
 
-if (fMAC) 
-set(CMAKE_CXX_FLAGS "${default_cxx_flag}-fPIC -frtti")
-set(CMAKE_C_FLAGS "${default_c_flag}  -fPIC -frtti")
-set(CMAKE_CXX_FLAGS_DEBUG "${default_cxx_flag} -MMD -MP -MF  -g -fPIC")
-endif()
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${DFLAG_MARTe} ${DCXX_COMPILER_FLAG_EXE}")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${DFLAG_MARTe} ${DC_COMPILER_FLAG} ")
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} ${DFLAG_MARTe} ${DC_COMPILER_FLAG} ")
+    
 
-add_definitions(-D_PTHREAD)
 
 set(CMAKE_LINK_LIBRARY_SUFFIX "")
 set(CMAKE_EXECUTABLE_SUFFIX ".ex")     # lib
-set(CMAKE_STATIC_LIBRARY_PREFIX "")     # lib
+set(CMAKE_STATIC_LIBRARY_PREFIX "lib")     # lib
 set(CMAKE_STATIC_LIBRARY_SUFFIX ".a")      # .a
-set(CMAKE_SHARED_LIBRARY_PREFIX "")     # lib
+set(CMAKE_SHARED_LIBRARY_PREFIX "lib")     # lib
 set(CMAKE_SHARED_LIBRARY_SUFFIX ".so")     # .so
 
 add_subdirectory(MARTeSupportLib)
