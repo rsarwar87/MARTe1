@@ -7,10 +7,20 @@
                 "use/includle",
                 "${workspaceFolder}/**"
             ],
-            "defines": ["-DUSE_PTHREAD -D_LINUX"],
+            "defines": ["USE_PTHREAD", "_LINUX"],
+            "intelliSenseMode": "clang-x64",
+            "browse": {
+                "path": [
+                    "use/local/includle",
+                    "use/includle",
+                    "${workspaceFolder}/**"
+                ],
+                "limitSymbolsToIncludedHeaders": true,
+                "databaseFilename": ""
+            },
             "compilerPath": "/usr/bin/g++",
             "cStandard": "c11",
-            "cppStandard": "c++17"
+            "cppStandard": "c++11"
         }
     ],
     "version": 4

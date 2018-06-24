@@ -9,3 +9,20 @@ If you wish to use them, you must accept their original licences.
 This specific for is for a MARTe1 minimal installation. More instructions to follow
 
 
+
+
+This branch supports cmake Makefile auto-generation.
+
+USAGE:
+1. clone the repository.
+2. create a build directory, preferably outside the source directory
+3. run: cmake <location of the top-level of the source directory>
+4. run: ccmake <location of the top-level of the source directory>
+5. select the packets needed, (not all switches have been implemented)
+6. press c to configure cmake scipts
+
+This branch has been configured to work with VSCode gdb debug tool and cross-references.
+1. from the root of the source directory, run vcode .
+2. to do debug and launch.
+
+
