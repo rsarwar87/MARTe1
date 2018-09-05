@@ -26,7 +26,7 @@
 #define CDB_INTERNAL
 #include "CDB.h"
 #include "LexicalAnalyzer.h"
-#include <iostream>
+
 
 OBJECTREGISTER(CDBNode,"$Id$")
 
@@ -508,8 +508,6 @@ bool CDBNode::ReadFromStream(   StreamInterface &   stream,
     while((latd = la.GetToken(stream)) != NULL){
         if (latd->Token() == CDBTV_EOF) break;
 
-        std::cout << "Line " << latd->LineNumber() << "==> " << latd->Description() << "==> " << latd->Data() << std::endl;
-
         if (latd->Token() == CDBTV_Error){
             if (err) err->Printf("Line[%i] lexical error %s %s\n",latd->LineNumber(),latd->Description(),latd->Data());
             AssertErrorCondition(SyntaxError,"Line[%i] lexical error %s %s\n",latd->LineNumber(),latd->Description(),latd->Data());
@@ -521,9 +519,7 @@ bool CDBNode::ReadFromStream(   StreamInterface &   stream,
             node->SubTreeName (location,".");
             err->Printf("Line[%i] {C=%i,L=%i} base=%s type=%s status=%s value=%s\n",latd->LineNumber(),parCount,parLevel,location.Buffer(),latd->Description(),status->name,latd->Data());
         }
-        FString location;
-        node->SubTreeName (location,".");
-        printf("\t\t{C=%i,L=%i} base=%s type=%s status=%s value=%s\n",parCount,parLevel,location.Buffer(),latd->Description(),status->name,latd->Data());
+
         switch (status->value){
             case CDBPSV_lvalue:{
                 switch(latd->Token()){
@@ -833,7 +829,7 @@ bool CDBNode::ReadFromStream(   StreamInterface &   stream,
         delete latd;
         latd = NULL;
     }
-    exit (1);
+
     if (parCount != 0){
         if (err) err->Printf("unexpected parCount = %i. Should be 0!\n",parCount);
         AssertErrorCondition(SyntaxError,"unexpected parCount = %i. Should be 0!\n",parCount);
@@ -843,7 +839,6 @@ bool CDBNode::ReadFromStream(   StreamInterface &   stream,
     if (err && parserReportEnabled)  err->Printf(">>END<<\n");
     return globalRet;
 }
-
 
 
 
