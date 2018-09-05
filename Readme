@@ -30,4 +30,4 @@ in order to add ncurses support, the library will have to be cross-compiled for 
 ./configure --host=arm-linux --with-shared  --with-build-cppflags=-D_GNU_SOURCE
 export CC arm-linux-gnueabihf-gcc
 make HOSTCC=gcc CXX=arm-linux-c++ -j12
-
+usage: change step 3 to cmake $(TOP) -DCMAKE_TOOLCHAIN_FILE=$(TOP)/toolchain-rasp2b.cmake
