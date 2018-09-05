@@ -15,3 +15,6 @@ SET(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
 
 set(tARM TRUE)
 set(CMAKE_SYSTEM_PROCESSOR "ARM1176")
+set(CURSES_LIBRARY /usr/arm-linux-gnueabihf/lib) 
+set(CURSES_INCLUDE_PATH /usr/arm-linux-gnueabihf/include)
+
