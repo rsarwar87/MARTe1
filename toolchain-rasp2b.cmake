@@ -11,9 +11,11 @@ SET(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
 # Search for libraries and headers in the target directories only
 SET(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
 SET(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
-add_definitions(-funsafe-math-optimizations -ffast-math -D_ARM -Wa,-mimplicit-it=thumb)
-#set(CMAKE_CXX_COMPILER "-std-c11")
+#add_definitions(-funsafe-math-optimizations -ffast-math -D_ARM -Wa,-mimplicit-it=thumb)
 
-set(CURSES_LIBRARY /home/rsarwar/workspace/ncurses-5.9/lib) 
+set(tARM TRUE)
+#set(CMAKE_CXX_COMPILER "-std-c11")
+set(CMAKE_SYSTEM_PROCESSOR "ARM1176")
+set(CURSES_LIBRARY /home/rsarwar/rkspace/ncurses-5.9/lib) 
 set(CURSES_INCLUDE_PATH /Home/rsarwar/workspace/ncurses-5.9/lib)
 

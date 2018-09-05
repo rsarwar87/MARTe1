@@ -13,10 +13,21 @@ set(DEBUG "-g") # debug flag
 set(fLINUX FALSE )
 set(fMAC FALSE)
 
-if(UNIX AND NOT APPLE)
+if (tARM)
+    message(STATUS ">>> Detected ${CMAKE_HOST_SYSTEM_PROCESSOR} ${os_version_suffix} host, Targeting ${CMAKE_SYSTEM_PROCESSOR}}")
+    add_definitions(-D_LINUX)
+    add_definitions(-D_ARM)
+    add_definitions(-funsafe-math-optimizations -ffast-math -D_ARM -Wa,-mimplicit-it=thumb)
+
+
+    set(DEBUG "-g -ggdb")
+    set(CXX_FLAG "${CXX_FLAG} -fPIC -frtti")
+    set(C_FLAG "${C_FLAG} -fPIC ")
+
+elseif(UNIX)
     if (APPLE) # things to do if in Apple platform.
         set(fMAC TRUE)
-        message(STATUS ">>> Detected MacOS installation ${CMAKE_SYSTEM_PROCESSOR} ${os_version_suffix}")
+        message(STATUS ">>> Detected MacOS installation ${CMAKE_HOST_SYSTEM_PROCESSOR} ${os_version_suffix}, Targeting ${CMAKE_SYSTEM_PROCESSOR}")
         add_definitions(-D_LINUX)
 
         set(DCXX_FLAG "-fPIC -frtti")
@@ -24,12 +35,12 @@ if(UNIX AND NOT APPLE)
         set(DLLEXT ".dylib")
     else() # things to do if in Linux enviornment (KDE nano (debian) and scintific linux tested)
         set(fLINUX TRUE)
-        message(STATUS ">>> Detected Linux installation ${CMAKE_SYSTEM_PROCESSOR} ${os_version_suffix}")
+        message(STATUS ">>> Detected ${CMAKE_HOST_SYSTEM_PROCESSOR} ${os_version_suffix} host, Targeting ${CMAKE_SYSTEM_PROCESSOR}}")
         add_definitions(-D_LINUX)
 
         set(DEBUG "-g -ggdb")
         set(CXX_FLAG "${CXX_FLAG} -fPIC -frtti -MMD -MP -MF")
-        set(C_FLAG "-fPIC ")
+        set(C_FLAG "${C_FLAG} -fPIC ")
     endif()
 
 
@@ -64,7 +75,7 @@ OPTION(BUILD_VERBOSE "make verbose=1" OFF)
 set(CMAKE_VERBOSE_MAKEFILE  ${BUILD_VERBOSE})
 
 # set build director and location. ccmake supported.
-set(BUILD_DIRECTORY build_${CMAKE_SYSTEM_NAME}${os_version_suffix}_${CMAKE_SYSTEM_PROCESSOR}
+set(BUILD_DIRECTORY build_${CMAKE_HOST_SYSTEM_NAME}${CMAKE_HOST_SYSTEM_PROCESSOR}_${CMAKE_SYSTEM_PROCESSOR}
                 CACHE STRING "Location of the build folder")
 set(BUILD_LOCATION ${CMAKE_CURRENT_BINARY_DIR} CACHE STRING "Name of the build folder")
 set(build_dir ${BUILD_LOCATION}/${BUILD_DIRECTORY})
