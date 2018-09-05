@@ -25,4 +25,9 @@ This branch has been configured to work with VSCode gdb debug tool and cross-ref
 1. from the root of the source directory, run vcode .
 2. to do debug and launch.
 
+RASPBERRY PI 
+in order to add ncurses support, the library will have to be cross-compiled for ARM. For this, clone the fit repo of ncurses and
+./configure --host=arm-linux --with-shared  --with-build-cppflags=-D_GNU_SOURCE
+export CC arm-linux-gnueabihf-gcc
+make HOSTCC=gcc CXX=arm-linux-c++ -j12
 

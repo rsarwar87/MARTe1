@@ -39,7 +39,7 @@
 #define FAMILY_MOTOROLA_PPC  0x20020000
 /** Defines the Processor Family for the Sparc */
 #define FAMILY_SPARC         0x40010000
-
+#define FAMILY_RPI_ARM1176   0x20030000
 /** @name Intel related defines
     @{
 */

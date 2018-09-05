@@ -18,7 +18,7 @@
  * See the Licence for the specific language governing 
    permissions and limitations under the Licence. 
  *
- * $Id$
+ * $Id: Atomic.h 75 2012-11-07 09:42:41Z aneto $
  *
 **/
 
@@ -34,6 +34,135 @@
 #include "GenDefs.h"
 #include "Sleep.h"
 
+#if defined(_LINUX) && defined(_ARM) 
+//Maybe put in other .h .c
+extern "C"{
+
+        #define atomic_inc_and_test(v)  (pa_atomic_add(v,1) == 0)
+
+
+
+	typedef   int  pa_atomic_t;
+
+	#define PA_ATOMIC_INIT(v) { .value = (v) }
+
+	static inline void pa_memory_barrier(void) {
+	#ifdef ATOMIC_ARM_MEMORY_BARRIER_ENABLED
+	    asm volatile ("mcr	p15, 0, r0, c7, c10, 5	@ dmb");
+	#endif
+
+	}
+
+	static inline int pa_atomic_load(const pa_atomic_t *a) {
+	    pa_memory_barrier();
+	    return *a;
+	}
+
+	static inline void pa_atomic_store(pa_atomic_t *a, int i) {
+	    *a = i;
+	    pa_memory_barrier();
+	}
+
+	// Returns the previously set value 
+	static inline int pa_atomic_add(pa_atomic_t *a, int i) {
+	    unsigned long not_exclusive;
+	    int new_val, old_val;
+
+	    pa_memory_barrier();
+	    do {
+		asm volatile ("ldrex	%0, [%3]\n"
+			      "add 	%2, %0, %4\n"
+			      "strex	%1, %2, [%3]\n"
+			      : "=&r" (old_val), "=&r" (not_exclusive), "=&r" (new_val)
+			      : "r" (a), "Ir" (i)
+			      : "cc");
+	    } while(not_exclusive);
+	    pa_memory_barrier();
+
+	    return old_val;
+	}
+
+	// Returns the previously set value 
+	static inline int pa_atomic_sub(pa_atomic_t *a, int i) {
+	    unsigned long not_exclusive;
+	    int new_val, old_val;
+
+	    pa_memory_barrier();
+	    do {
+		asm volatile ("ldrex	%0, [%3]\n"
+			      "sub 	%2, %0, %4\n"
+			      "strex	%1, %2, [%3]\n"
+			      : "=&r" (old_val), "=&r" (not_exclusive), "=&r" (new_val)
+			      : "r" (a), "Ir" (i)
+			      : "cc");
+	    } while(not_exclusive);
+	    pa_memory_barrier();
+
+	    return old_val;
+	}
+
+	static inline int pa_atomic_inc(pa_atomic_t *a) {
+	    return pa_atomic_add(a, 1);
+	}
+
+	static inline int pa_atomic_dec(pa_atomic_t *a) {
+	    return pa_atomic_sub(a, 1);
+	}
+
+	static inline int pa_atomic_cmpxchg(pa_atomic_t *a, int old_i, int new_i) {
+	    unsigned long not_equal, not_exclusive;
+
+	    pa_memory_barrier();
+	    do {
+		asm volatile ("ldrex	%0, [%2]\n"
+			      "subs	%0, %0, %3\n"
+			      "mov	%1, %0\n"
+			      "strexeq %0, %4, [%2]\n"
+			      : "=&r" (not_exclusive), "=&r" (not_equal)
+			      : "r" (a), "Ir" (old_i), "r" (new_i)
+			      : "cc");
+	    } while(not_exclusive && !not_equal);
+	    pa_memory_barrier();
+
+	    return !not_equal;
+	}
+
+	typedef struct pa_atomic_ptr {
+	    volatile unsigned long value;
+	} pa_atomic_ptr_t;
+
+	#define PA_ATOMIC_PTR_INIT(v) { .value = (long) (v) }
+
+	static inline void* pa_atomic_ptr_load(const pa_atomic_ptr_t *a) {
+	    pa_memory_barrier();
+	    return (void*) a->value;
+	}
+
+	static inline void pa_atomic_ptr_store(pa_atomic_ptr_t *a, void *p) {
+	    a->value = (unsigned long) p;
+	    pa_memory_barrier();
+	}
+
+	static inline int pa_atomic_ptr_cmpxchg(pa_atomic_ptr_t *a, void *old_p, void* new_p) {
+	    unsigned long not_equal, not_exclusive;
+
+	    pa_memory_barrier();
+	    do {
+		asm volatile ("ldrex	%0, [%2]\n"
+			      "subs	%0, %0, %3\n"
+			      "mov	%1, %0\n"
+			      "strexeq %0, %4, [%2]\n"
+			      : "=&r" (not_exclusive), "=&r" (not_equal)
+			      : "r" (&a->value), "Ir" (old_p), "r" (new_p)
+			      : "cc");
+	    } while(not_exclusive && !not_equal);
+	    pa_memory_barrier();
+
+	    return !not_equal;
+	}
+
+}
+#endif
 /** A collector of functions that are executed atomically even on multiprocessor machines. */
 class Atomic{
 
@@ -87,6 +216,9 @@ public:
             "ADDQL #1,(%0)\n"
             : : "d" (p)
         );
+#elif defined(_LINUX) && defined(_ARM) 
+	
+	pa_atomic_inc((pa_atomic_t *)p);
 
 #elif (defined(_RTAI) || defined(_LINUX) || defined(_MACOSX))
         asm volatile(
@@ -129,6 +261,8 @@ public:
             "ADDQW #1,(%0)\n"
             : : "d" (p)
         );
+#elif defined(_LINUX) && defined(_ARM) 
+	printf("Increment (volatile int16 *p) NOT YET IMPLEMENTED for ARM1176 rpi\n");
 #elif (defined(_RTAI) || defined(_LINUX) || defined(_MACOSX))
         asm volatile(
             "lock incw (%0)\n"
@@ -169,6 +303,9 @@ public:
             "ADDQB #1,(%0)\n"
             : : "d" (p)
         );
+#elif defined(_LINUX) && defined(_ARM) 
+	printf("Increment (volatile int8 *p) NOT YET IMPLEMENTED for ARM1176 rpi\n");
+
 #elif (defined(_RTAI) || defined(_LINUX) || defined(_MACOSX))
         asm volatile(
             "lock incb (%0)\n"
@@ -209,6 +346,9 @@ public:
             "SUBQL #1,(%0)\n"
             : : "d" (p)
         );
+#elif defined(_LINUX) && defined(_ARM) 
+	
+	pa_atomic_dec((pa_atomic_t *)p);
 #elif (defined(_RTAI) || defined(_LINUX) || defined(_MACOSX))
         asm volatile(
             "lock decl (%0)\n"
@@ -249,6 +389,9 @@ public:
             "SUBQW #1,(%0)\n"
             : : "d" (p)
         );
+#elif defined(_LINUX) && defined(_ARM) 
+	printf("Decrement (volatile int16 *p) NOT YET IMPLEMENTED for ARM1176rpi\n");
+
 #elif (defined(_RTAI) || defined(_LINUX) || defined(_MACOSX))
         asm volatile(
             "lock decw (%0)\n"
@@ -289,6 +432,9 @@ public:
             "SUBQB #1,(%0)\n"
             : : "d" (p)
         );
+#elif defined(_LINUX) && defined(_ARM) 
+	printf("Decrement (volatile int8 *p) NOT YET IMPLEMENTED for ARM1176rpi\n");
+
 #elif (defined(_RTAI) || defined(_LINUX) || defined(_MACOSX))
         asm volatile(
             "lock decb (%0)\n"
@@ -334,6 +480,10 @@ public:
             : "=d" (p) : "d" (v)
         );
         return ret;
+
+#elif defined(_LINUX) && defined(_ARM) 
+	 pa_atomic_cmpxchg((pa_atomic_t*)p, *p, v);
+
 #elif defined(_RTAI)
         volatile int ret = *p;
         asm volatile(
@@ -388,6 +538,9 @@ public:
         );
 
     return(out!=0);
+
+#elif defined(_LINUX) && defined(_ARM) 
+       return atomic_inc_and_test((pa_atomic_t *)p);
 #elif (defined(_RTAI) || defined(_LINUX) || defined(_MACOSX))
     register int32 out=1;
     asm volatile (
@@ -444,6 +597,10 @@ public:
         :"=d" (out) :"g" (p)
     );
     return(out!=0);
+#elif defined(_LINUX) && defined(_ARM) 
+
+    printf("TestAndSet(int16  volatile *p) NOT YET IMPLEMENTED for ARM1176rpi\n");
+
 #elif (defined(_RTAI) || defined(_LINUX) || defined(_MACOSX))
     register int16 out=1;
     asm volatile (
@@ -499,6 +656,10 @@ public:
         :"=d" (out)  :"g" (p)
     );
     return(out!=0);
+
+#elif defined(_LINUX) && defined(_ARM) 
+
+    printf("TestAndSet(int8  volatile *p) NOT YET IMPLEMENTED for ARM1176rpi\n");
 #elif (defined(_RTAI) || defined(_LINUX) || defined(_MACOSX))
     register int8 out=1;
     asm volatile (
@@ -522,7 +683,11 @@ public:
      * Atomic addition
      */
     static inline void Add (volatile int32 *p, int32 value) {
-#if (defined(_RTAI) || defined(_LINUX) || defined(_MACOSX))
+
+
+#if defined(_LINUX) && defined(_ARM) 
+	pa_atomic_add((pa_atomic_t *)p, value);
+#elif (defined(_RTAI) || defined(_LINUX) || defined(_MACOSX))
         asm volatile (
                 "lock addl %1, (%0)"
                 : /* output */
@@ -548,7 +713,10 @@ public:
      * Atomic subtraction
      */
     static inline void Sub (volatile int32 *p, int32 value) {
-#if (defined(_RTAI) || defined(_LINUX) || defined(_MACOSX))
+#if defined(_LINUX) && defined(_ARM) 
+	 pa_atomic_sub((pa_atomic_t *)p, value);
+
+#elif (defined(_RTAI) || defined(_LINUX) || defined(_MACOSX))
         asm volatile (
                 "lock subl %1, (%0)"
                 : /* output */

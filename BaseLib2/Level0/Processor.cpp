@@ -170,7 +170,7 @@ public:
         //RT_SCHED_MODE
         Processor_HRTFrequency = nano2count(1000000000);
         Processor_HRTPeriod = 1.0 / Processor_HRTFrequency;
-#elif defined(_LINUX)
+#elif defined(_LINUX) && !defined(_ARM)
 
 #define LINUX_CPUINFO_BUFFER_SIZE 1023
         Processor_HRTFrequency = 0;
@@ -277,6 +277,8 @@ uint64 ProcessorClockRate(){
     return 400000000;
 #elif defined(_VX68K)
     return 16000000;
+#elif defined(_ARM)
+    return 700000000;
 #else
 #endif
 }
@@ -291,6 +293,8 @@ double ProcessorClockCycle(){
     return 2.5e-9;
 #elif defined(_VX68K)
     return 62.5e-9;
+#elif defined(_ARM)
+    return 1.428571429e-9;
 #else
 #endif
 }
@@ -307,6 +311,8 @@ const char *ProcessorName(){
     return "68040";
 #elif defined(_SOLARIS)
     return "SPARC";
+#elif defined(_ARM)
+    return "ARM1176";
 #else
 #endif
 }
@@ -322,6 +328,8 @@ uint32 ProcessorFamily(){
     return FAMILY_MOTOROLA_68K;
 #elif defined(_SOLARIS)
     return FAMILY_SPARC;
+#elif defined(_ARM)
+    return FAMILY_RPI_ARM1176;
 #else
 #endif
 }

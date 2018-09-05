@@ -89,6 +89,8 @@ public:
             "ADDQL #1,(%0)\n"
             : : "d" (p)
         );
+#elif defined(_LINUX) && defined(_ARM)
+        printf("SPAtomic::Increment not yet implemented in ARM");
 
 #elif (defined(_RTAI) || defined(_LINUX) || defined(_MACOSX))
         asm (

@@ -18,7 +18,7 @@
  * See the Licence for the specific language governing 
    permissions and limitations under the Licence. 
  *
- * $Id$
+ * $Id: Endianity.h 3 2012-01-15 16:26:07Z aneto $
  *
 **/
 
@@ -30,6 +30,9 @@
 #define ENDIANITY_H
 
 #include "System.h"
+#if defined(_LINUX) && defined(_ARM)
+#include "byteswap.h"
+#endif
 
 class Endianity {
 public:
@@ -55,10 +58,15 @@ public:
 #elif (defined(_RTAI) || defined(_LINUX) || defined(_MACOSX))
         int32 *xx = (int32 *)x;
         register int32 temp=*xx;
-        asm(
+	 #if defined(_ARM)
+            temp=bswap_32(temp); 
+	   
+         #else         
+	asm(
             "bswap %1"
             : "=r" (temp) : "0" (temp)
             );
+	#endif
         *xx=temp;
 #elif defined(_VX68K)
 	volatile int32 temp;
@@ -120,10 +128,14 @@ public:
         register int32 *xx = (int32 *)x;
         for (uint32 i=0; i<sizer; i++) {
             register int32 temp=*xx;
+	    #if defined(_ARM)
+            temp=bswap_32(temp); 
+	    #else 	
             asm(
                 "bswap %1"
                 : "=r" (temp) : "0" (temp)
                 );
+	    #endif
             *xx=temp;
             xx++;
         }
@@ -199,10 +211,14 @@ public:
         register int32 *d = (int32 *)dest;
         for (uint32 i=0; i<sizer; i++) {
             register int32 temp=*s;
+	    #if defined(_ARM)
+            temp=bswap_32(temp); 
+	    #else 	
             asm(
                 "bswap %1"
                 : "=r" (temp) : "0" (temp)
                 );
+	    #endif
             *d=temp;
             d++;
             s++;
@@ -257,6 +273,11 @@ public:
         asm volatile(
             "lhbrx %0,0,%1": "=r" (*s): "r" (s)
             );
+#elif defined(_LINUX) && defined(_ARM) 
+	volatile int16 *temp=(int16 *)x;
+	*temp=bswap_16(*temp);	
+	*((int16 *)x)=*temp;
+
 #elif (defined(_RTAI)|| defined(_LINUX) || defined(_MACOSX))
         asm(
             "movw (%0), %%dx\n"
@@ -318,12 +339,16 @@ public:
 #elif (defined(_RTAI)|| defined(_LINUX) || defined(_MACOSX))
         register int16 *xx = (int16 *)x;
         for (uint32 i=0; i<sizer; i++) {
+	    #if defined(_ARM) 
+		*xx=bswap_16(*xx);
+	    #else        
             asm(
                 "movw (%0), %%dx\n"
                 "xchgb %%dl, %%dh\n"
                 "movw %%dx, (%0)"
                 : : "r" (xx) :"dx"
                 );
+	    #endif
             xx++;
         }
 #elif defined(_VX68K)
@@ -391,13 +416,17 @@ public:
         int16 *s = (int16 *)src;
         int16 *d = (int16 *)dest;
         for(uint32 i=0;i<sizer;i++){
-            asm(
+            #if defined(_ARM) 
+	    *d=bswap_16(*s);
+	    #else        
+	     asm(
                 "movw (%0), %%dx\n"
                 "xchgb %%dl, %%dh\n"
                 "movw %%dx, (%1)"
                 : : "r" (s), "r" (d) :"dx"
                 );
-            s++;
+            #endif
+	    s++;
             d++;
         }
 

@@ -28,7 +28,7 @@ if(UNIX AND NOT APPLE)
         add_definitions(-D_LINUX)
 
         set(DEBUG "-g -ggdb")
-        set(CXX_FLAG "-fPIC -frtti -MMD -MP -MF")
+        set(CXX_FLAG "${CXX_FLAG} -fPIC -frtti -MMD -MP -MF")
         set(C_FLAG "-fPIC ")
     endif()
 

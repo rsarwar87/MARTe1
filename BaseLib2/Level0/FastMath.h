@@ -18,7 +18,7 @@
  * See the Licence for the specific language governing 
    permissions and limitations under the Licence. 
  *
- * $Id$
+ * $Id: FastMath.h 3 2012-01-15 16:26:07Z aneto $
  *
 **/
 
@@ -115,7 +115,7 @@ static inline int32 FastFloat2Int(float input){
         fistp temp;
     }
     return temp;
-#elif (defined(_RTAI) || defined(_LINUX) || defined(_MACOSX))
+#elif (!defined(_ARM) & (defined(_RTAI) || defined(_LINUX) || defined(_MACOSX)))
     volatile int32 output;
     __asm__ __volatile__(
         "fld   %1;\n"
@@ -135,7 +135,7 @@ static inline int32 FastFloat2Int(float input){
 static inline float FastCos(float angle){
 #if defined(_CINT)
     return 0;
-#elif (defined(_RTAI) || defined(_LINUX) || defined(_MACOSX))
+#elif (!defined(_ARM) & (defined(_RTAI) || defined(_LINUX) || defined(_MACOSX)))
     volatile float output;
     __asm__ __volatile__(
          "fcos;"
@@ -150,7 +150,7 @@ static inline float FastCos(float angle){
 static inline float FastSin(float angle){
 #if defined(_CINT)
     return 0;
-#elif (defined(_RTAI) || defined(_LINUX) || defined(_MACOSX))
+#elif (!defined(_ARM) &(defined(_RTAI) || defined(_LINUX) || defined(_MACOSX)))
     volatile float output;
     __asm__ __volatile__("fsin" : "=t" (output) : "0" (angle));
     return output;

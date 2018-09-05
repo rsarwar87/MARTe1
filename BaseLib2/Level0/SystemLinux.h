@@ -86,8 +86,9 @@
 // sock_init() moved to InternetAddress.cpp
 
 #define INTEL_BYTE_ORDER
+#ifndef _ARM
 #define INTEL_PLATFORM
-
+#endif
 #define _EXTERN_ extern
 
 #define IEEE_FLOAT_NAN 0x7fC00000

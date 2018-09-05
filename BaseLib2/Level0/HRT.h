@@ -46,6 +46,12 @@ static inline uint32 HRTRead32() {
         _emit 0x0F
         _emit 0x31
     }
+#elif defined (_LINUX) && defined (_ARM)
+    uint32 tns;
+    struct timespec t;
+    clock_gettime(CLOCK_REALTIME, &t);
+    tns=((t.tv_sec)*1e9+ t.tv_nsec)*6.999999998e-1;//change here if is not a rpi or u change freq
+    return tns;
 #elif (defined(_CY32) || defined(__EMX__) || defined(_RSXNT) || defined(_LINUX) || defined(_RTAI) || defined(_MACOSX))
 
     uint64 perf;
@@ -84,6 +90,11 @@ static inline int64 HRTRead64 () {
         _emit 0x0F
         _emit 0x31
     }
+#elif defined(_LINUX) && defined(_ARM) 
+    int64 tns;
+     struct timespec t;
+     tns=((t.tv_sec)*1e9+ t.tv_nsec)*6.999999998e-1;//change here if is not a rpi or u chang
+     return tns;
 #elif (defined(_CY32) || defined(__EMX__) || defined(_RSXNT))
     volatile int64 perf;
     uint32 *pperf = (uint32 *)&perf;
