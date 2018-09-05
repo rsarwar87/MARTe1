@@ -27,7 +27,7 @@ This branch has been configured to work with VSCode gdb debug tool and cross-ref
 
 RASPBERRY PI 
 in order to add ncurses support, the library will have to be cross-compiled for ARM. For this, clone the fit repo of ncurses and
-./configure --host=arm-linux --with-shared  --with-build-cppflags=-D_GNU_SOURCE
-export CC arm-linux-gnueabihf-gcc
+git clone https://github.com/gittup/ncurses 
+CC=arm-linux-gnueabihf-gcc ./configure --host=arm-linux --with-shared  --with-build-cppflags=-D_GNU_SOURCE --prefix=/usr/arm-linux-gnueabihf/
 make HOSTCC=gcc CXX=arm-linux-c++ -j12
 usage: change step 3 to cmake $(TOP) -DCMAKE_TOOLCHAIN_FILE=$(TOP)/toolchain-rasp2b.cmake
