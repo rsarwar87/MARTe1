@@ -23,6 +23,14 @@ if (tARM)
     set(DEBUG "-g -ggdb")
     set(CXX_FLAG "${CXX_FLAG} -fPIC -frtti")
     set(C_FLAG "${C_FLAG} -fPIC ")
+elseif (tm32)
+    message(STATUS ">>> Detected ${CMAKE_HOST_SYSTEM_PROCESSOR} ${os_version_suffix} host, Targeting ${CMAKE_SYSTEM_PROCESSOR}}")
+    add_definitions(-D_LINUX)
+
+
+    set(DEBUG "-g -ggdb")
+    set(CXX_FLAG "${CXX_FLAG} -fPIC -frtti -m32")
+    set(C_FLAG "${C_FLAG} -fPIC -m32")
 
 elseif(UNIX)
     if (APPLE) # things to do if in Apple platform.
